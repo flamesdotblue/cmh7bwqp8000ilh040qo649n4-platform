@@ -1,50 +1,60 @@
-import React, { useMemo } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Spline from '@splinetool/react-spline';
 
-export default function Hero() {
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 600], [0, -120]);
-  const opacity = useTransform(scrollY, [0, 400], [1, 0.4]);
+export default function Hero({ show }) {
+  const containerRef = useRef(null);
 
-  const headline = useMemo(() => (
-    <motion.h1
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 1.4, duration: 0.8 }}
-      className="text-center text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight text-zinc-100"
-    >
-      Building Dreams, Crafting Spaces
-    </motion.h1>
-  ), []);
+  useEffect(() => {
+    if (!containerRef.current) return;
+  }, []);
 
   return (
-    <section id="home" className="relative h-[92vh] w-full overflow-hidden">
-      <motion.div style={{ y, opacity }} className="absolute inset-0">
+    <section id="home" className="relative min-h-[90vh] w-full">
+      <div className="absolute inset-0">
         <Spline scene="https://prod.spline.design/Gt5HUob8aGDxOUep/scene.splinecode" style={{ width: '100%', height: '100%' }} />
-      </motion.div>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0b0f14]/50 via-[#0b0f14]/60 to-[#0b0f14]" />
+      </div>
 
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(60%_60%_at_50%_0%,rgba(0,0,0,0.0),rgba(11,15,20,0.8)_70%,rgba(11,15,20,1)_100%)]" />
+      <div ref={containerRef} className="relative z-10 mx-auto w-[92%] max-w-7xl pt-40 pb-24">
+        <AnimatePresence>
+          {show && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+              className="max-w-3xl"
+            >
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-300 backdrop-blur">
+                Technology. Luxury. Precision.
+              </div>
+              <h1 className="mt-6 text-4xl md:text-6xl font-semibold tracking-tight text-gray-100">
+                Building Dreams, Crafting Spaces
+              </h1>
+              <p className="mt-4 text-gray-400 max-w-xl">
+                Experience cinematic real estate with Obsidian Realty. Meticulous architecture, immersive interiors, and seamless financing — all in one premium journey.
+              </p>
+              <div className="mt-8 flex items-center gap-3">
+                <a href="#projects" className="rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-3 text-sm font-medium text-white shadow-[0_10px_30px_rgba(59,130,246,0.40)] hover:shadow-[0_12px_40px_rgba(59,130,246,0.55)] transition-shadow">
+                  Explore Projects
+                </a>
+                <a href="#contact" className="rounded-xl px-5 py-3 text-sm font-medium text-gray-200 ring-1 ring-white/15 hover:bg-white/10">
+                  Get in Touch
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-      <div className="relative mx-auto flex h-full max-w-7xl flex-col items-center justify-end pb-24 px-6">
-        {headline}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.7, duration: 0.7 }}
-          className="mt-4 text-center max-w-2xl text-zinc-400"
-        >
-          Premium residences and commercial spaces designed with precision, technology, and timeless aesthetics.
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.9, duration: 0.7 }}
-          className="mt-8 flex gap-4"
-        >
-          <a href="#projects" className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 shadow-lg shadow-blue-900/30 hover:from-blue-500 hover:to-blue-400 transition-colors">Explore Projects</a>
-          <a href="#about" className="rounded-xl border border-white/10 bg-white/5 backdrop-blur px-6 py-3 text-zinc-200 hover:bg-white/10 transition-colors">About Us</a>
-        </motion.div>
+      <div className="absolute inset-x-0 bottom-0 z-10">
+        <div className="mx-auto w-[92%] max-w-7xl grid grid-cols-2 md:grid-cols-4 gap-3 pb-8">
+          {["Apartments","Villas","Commercial","Interiors"].map((item) => (
+            <div key={item} className="rounded-2xl bg-white/5 backdrop-blur ring-1 ring-white/10 px-4 py-3 text-sm text-gray-300">
+              {item}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

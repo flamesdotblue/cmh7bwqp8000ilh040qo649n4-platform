@@ -1,262 +1,43 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Filter, User, Building, Banknote, Mail, Shield } from 'lucide-react';
+import { Filter, Users, Building2, Ruler, Banknote, Send, FileText, Image as ImageIcon } from 'lucide-react';
 
-const SectionHeader = ({ eyebrow, title, align = 'left' }) => (
-  <div className={`mb-10 ${align === 'center' ? 'text-center' : ''}`}>
-    <div className="text-xs uppercase tracking-[0.2em] text-blue-400/80">{eyebrow}</div>
-    <h2 className="mt-2 text-2xl md:text-3xl lg:text-4xl font-semibold text-zinc-100">{title}</h2>
-  </div>
-);
+const accent = 'from-blue-500 to-blue-300';
 
-function GlassCard({ children, className = '' }) {
+const team = [
+  { id: 1, name: 'Ava Stone', role: 'Principal Architect', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1000&auto=format&fit=crop', bio: 'Leads design vision with a focus on cinematic forms and human-centered spatial experiences.' },
+  { id: 2, name: 'Liam Hayes', role: 'Head of Interiors', img: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=1000&auto=format&fit=crop', bio: 'Crafts tech-luxury interiors blending matte textures, glass, and ambient lighting.' },
+  { id: 3, name: 'Maya Chen', role: 'Project Director', img: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=1000&auto=format&fit=crop', bio: 'Drives execution with precision, partnering with top developers and banks.' },
+  { id: 4, name: 'Noah Patel', role: 'Finance Specialist', img: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=1000&auto=format&fit=crop', bio: 'Simplifies home loans with tailored plans and transparent guidance.' },
+];
+
+const projects = [
+  { id: 1, title: 'Skyline Residences', cat: 'Apartments', img: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?q=80&w=1200&auto=format&fit=crop' },
+  { id: 2, title: 'Aurora Tower', cat: 'Commercial', img: 'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop' },
+  { id: 3, title: 'Elysian Villas', cat: 'Villas', img: 'https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?q=80&w=1200&auto=format&fit=crop' },
+  { id: 4, title: 'Harbor One', cat: 'Apartments', img: 'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop' },
+  { id: 5, title: 'Cobalt Park', cat: 'Commercial', img: 'https://images.unsplash.com/photo-1508385082359-f38ae991e8f2?q=80&w=1200&auto=format&fit=crop' },
+  { id: 6, title: 'Zenith Estates', cat: 'Villas', img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1200&auto=format&fit=crop' },
+];
+
+const banks = [
+  { id: 'b1', name: 'Axis Bank', rate: 8.35 },
+  { id: 'b2', name: 'HDFC', rate: 8.45 },
+  { id: 'b3', name: 'ICICI', rate: 8.55 },
+  { id: 'b4', name: 'SBI', rate: 8.25 },
+];
+
+function SectionHeader({ icon: Icon, title, subtitle }) {
   return (
-    <div className={`rounded-2xl border border-white/10 bg-white/5 backdrop-blur shadow-[0_8px_30px_rgba(0,0,0,0.35)] ${className}`}>
-      {children}
+    <div className="flex items-center justify-between">
+      <div>
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-300">
+          <Icon size={14} />
+          <span>{subtitle}</span>
+        </div>
+        <h2 className="mt-3 text-2xl md:text-3xl font-semibold text-gray-100">{title}</h2>
+      </div>
     </div>
-  );
-}
-
-function AboutSection() {
-  const team = [
-    { id: 1, name: 'Ava Morgan', role: 'Founder & CEO', img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1200&auto=format&fit=crop', bio: 'Architect-turned-entrepreneur with a passion for tech-driven luxury spaces.' },
-    { id: 2, name: 'Noah Patel', role: 'Head of Design', img: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=1200&auto=format&fit=crop', bio: 'Leads interiors with minimalist aesthetics and cinematic lighting.' },
-    { id: 3, name: 'Luna Chen', role: 'Project Director', img: 'https://images.unsplash.com/photo-1541533260371-b8fc9b596d84?q=80&w=1200&auto=format&fit=crop', bio: 'Delivering complex developments with precision and empathy.' },
-    { id: 4, name: 'Ethan Rossi', role: 'Finance & Loans', img: 'https://images.unsplash.com/photo-1546525848-3ce03ca516f6?q=80&w=1200&auto=format&fit=crop', bio: 'Structuring smart finance solutions with partner banks.' },
-  ];
-
-  const [selected, setSelected] = useState(team[0]);
-
-  return (
-    <section id="about" className="relative mx-auto max-w-7xl px-6 py-20">
-      <SectionHeader eyebrow="About" title="Obsidian Realty" />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <GlassCard className="col-span-2 p-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {team.map((m) => (
-              <button key={m.id} onClick={() => setSelected(m)} className={`group relative overflow-hidden rounded-xl border ${selected.id === m.id ? 'border-blue-500/60' : 'border-white/10'} bg-white/5 hover:bg-white/10 transition-all`}>
-                <img src={m.img} alt={m.name} className="h-36 w-full object-cover" />
-                <div className="p-3 text-left">
-                  <div className="text-sm text-zinc-100">{m.name}</div>
-                  <div className="text-xs text-zinc-400">{m.role}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </GlassCard>
-        <GlassCard className="p-6">
-          <div className="flex items-start gap-4">
-            <img src={selected.img} alt={selected.name} className="size-20 rounded-lg object-cover" />
-            <div>
-              <div className="text-zinc-100 font-medium">{selected.name}</div>
-              <div className="text-sm text-zinc-400">{selected.role}</div>
-              <p className="mt-3 text-sm text-zinc-300/90">{selected.bio}</p>
-            </div>
-          </div>
-        </GlassCard>
-      </div>
-    </section>
-  );
-}
-
-function ProjectsSection() {
-  const categories = ['All', 'Apartments', 'Villas', 'Commercial'];
-  const [active, setActive] = useState('All');
-  const items = [
-    { id: 1, title: 'Skyline Residences', cat: 'Apartments', img: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?q=80&w=1200&auto=format&fit=crop' },
-    { id: 2, title: 'Aurora Towers', cat: 'Commercial', img: 'https://images.unsplash.com/photo-1558980664-10ebee3c487b?q=80&w=1200&auto=format&fit=crop' },
-    { id: 3, title: 'Golden Crest Villas', cat: 'Villas', img: 'https://images.unsplash.com/photo-1560184897-ae75f418493e?q=80&w=1200&auto=format&fit=crop' },
-    { id: 4, title: 'Obsidian Quarters', cat: 'Apartments', img: 'https://images.unsplash.com/photo-1512914890250-8178e7f9b9de?q=80&w=1200&auto=format&fit=crop' },
-    { id: 5, title: 'Marina Business Bay', cat: 'Commercial', img: 'https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?q=80&w=1200&auto=format&fit=crop' },
-    { id: 6, title: 'Elysian Villas', cat: 'Villas', img: 'https://images.unsplash.com/photo-1459535653751-d571815e906b?q=80&w=1200&auto=format&fit=crop' },
-  ];
-  const filtered = active === 'All' ? items : items.filter((i) => i.cat === active);
-
-  return (
-    <section id="projects" className="relative mx-auto max-w-7xl px-6 py-20">
-      <SectionHeader eyebrow="Projects" title="Signature Developments" />
-      <div className="mb-6 flex flex-wrap items-center gap-2">
-        {categories.map((c) => (
-          <button key={c} onClick={() => setActive(c)} className={`rounded-xl border px-4 py-2 text-sm transition-all ${active === c ? 'bg-blue-600 text-white border-blue-500' : 'bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10'}`}>
-            <div className="flex items-center gap-2"><Filter className="size-4" />{c}</div>
-          </button>
-        ))}
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((card) => (
-          <motion.div key={card.id} whileHover={{ y: -6 }} className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
-            <div className="relative">
-              <img src={card.img} alt={card.title} className="h-56 w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4">
-                <div className="text-zinc-100 font-medium">{card.title}</div>
-                <div className="text-xs text-zinc-400">{card.cat}</div>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function InteriorSection() {
-  const [slider, setSlider] = useState(50);
-  const before = 'https://images.unsplash.com/photo-1505692794403-34d4982f88aa?q=80&w=1600&auto=format&fit=crop';
-  const after = 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1600&auto=format&fit=crop';
-
-  return (
-    <section id="interior" className="relative mx-auto max-w-7xl px-6 py-20">
-      <SectionHeader eyebrow="Interior Designing" title="Before / After Showcase" />
-      <GlassCard className="p-6">
-        <div className="relative w-full overflow-hidden rounded-xl">
-          <img src={after} alt="after" className="w-full h-[420px] object-cover" />
-          <div className="absolute inset-0" style={{ width: slider + '%', overflow: 'hidden' }}>
-            <img src={before} alt="before" className="w-full h-[420px] object-cover" />
-          </div>
-          <input type="range" min="0" max="100" value={slider} onChange={(e) => setSlider(Number(e.target.value))} className="absolute bottom-4 left-1/2 -translate-x-1/2 w-1/2 accent-blue-500" />
-        </div>
-        <div className="mt-4 flex justify-between text-sm text-zinc-400">
-          <span>Before</span>
-          <span>After</span>
-        </div>
-      </GlassCard>
-    </section>
-  );
-}
-
-function LoansSection() {
-  const banks = [
-    { name: 'Aurora Bank', rate: 8.2 },
-    { name: 'Crest Finance', rate: 7.9 },
-    { name: 'Nova Capital', rate: 8.5 },
-  ];
-
-  const [amount, setAmount] = useState(8000000);
-  const [rate, setRate] = useState(8.0);
-  const [years, setYears] = useState(15);
-
-  const emi = useMemo(() => {
-    const P = amount;
-    const r = rate / 12 / 100;
-    const n = years * 12;
-    if (r === 0) return P / n;
-    return (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-  }, [amount, rate, years]);
-
-  return (
-    <section id="loans" className="relative mx-auto max-w-7xl px-6 py-20">
-      <SectionHeader eyebrow="Home Loans" title="Smart Financing" />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <GlassCard className="p-6 lg:col-span-2">
-          <div className="grid sm:grid-cols-3 gap-6">
-            <div>
-              <label className="text-sm text-zinc-400">Loan Amount (₹)</label>
-              <input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-zinc-100" />
-            </div>
-            <div>
-              <label className="text-sm text-zinc-400">Interest Rate (%)</label>
-              <input type="number" step="0.1" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-zinc-100" />
-            </div>
-            <div>
-              <label className="text-sm text-zinc-400">Tenure (Years)</label>
-              <input type="number" value={years} onChange={(e) => setYears(Number(e.target.value))} className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-zinc-100" />
-            </div>
-          </div>
-          <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-            <GlassCard className="p-4">
-              <div className="text-xs text-zinc-400">Monthly EMI</div>
-              <div className="mt-1 text-lg text-zinc-100">₹ {emi.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
-            </GlassCard>
-            <GlassCard className="p-4">
-              <div className="text-xs text-zinc-400">Total Years</div>
-              <div className="mt-1 text-lg text-zinc-100">{years}</div>
-            </GlassCard>
-            <GlassCard className="p-4">
-              <div className="text-xs text-zinc-400">Interest</div>
-              <div className="mt-1 text-lg text-zinc-100">{rate}%</div>
-            </GlassCard>
-            <GlassCard className="p-4">
-              <div className="text-xs text-zinc-400">Amount</div>
-              <div className="mt-1 text-lg text-zinc-100">₹ {amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
-            </GlassCard>
-          </div>
-        </GlassCard>
-        <GlassCard className="p-6">
-          <div className="text-sm text-zinc-400 mb-3">Partner Banks</div>
-          <div className="space-y-3">
-            {banks.map((b) => (
-              <div key={b.name} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                <div className="flex items-center gap-3">
-                  <Banknote className="size-4 text-blue-400" />
-                  <span className="text-zinc-100">{b.name}</span>
-                </div>
-                <div className="text-zinc-400 text-sm">{b.rate}% APR</div>
-              </div>
-            ))}
-          </div>
-        </GlassCard>
-      </div>
-    </section>
-  );
-}
-
-function ContactSection() {
-  return (
-    <section id="contact" className="relative mx-auto max-w-7xl px-6 py-20">
-      <SectionHeader eyebrow="Contact" title="Let’s Collaborate" />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <GlassCard className="p-6 lg:col-span-2">
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm text-zinc-400">Name</label>
-              <input type="text" placeholder="Your name" className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-zinc-100 placeholder:text-zinc-500" />
-            </div>
-            <div>
-              <label className="text-sm text-zinc-400">Email</label>
-              <input type="email" placeholder="you@example.com" className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-zinc-100 placeholder:text-zinc-500" />
-            </div>
-            <div className="md:col-span-2">
-              <label className="text-sm text-zinc-400">Message</label>
-              <textarea rows={5} placeholder="Tell us about your requirements" className="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-zinc-100 placeholder:text-zinc-500" />
-            </div>
-            <div className="md:col-span-2">
-              <button type="submit" className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 shadow-lg shadow-blue-900/30 hover:from-blue-500 hover:to-blue-400 transition-colors">Send Message</button>
-            </div>
-          </form>
-        </GlassCard>
-        <GlassCard className="p-6 flex flex-col gap-4">
-          <div className="flex items-center gap-3 text-zinc-300"><User className="size-4 text-blue-400" /> Premium support within 24 hours</div>
-          <div className="flex items-center gap-3 text-zinc-300"><Building className="size-4 text-blue-400" /> HQ: 88 Obsidian Ave, Downtown</div>
-          <div className="flex items-center gap-3 text-zinc-300"><Mail className="size-4 text-blue-400" /> hello@obsidianrealty.com</div>
-          <div className="flex items-center gap-3 text-zinc-300"><Shield className="size-4 text-blue-400" /> Secure & private</div>
-        </GlassCard>
-      </div>
-    </section>
-  );
-}
-
-function AdminPreview() {
-  const cards = [
-    { title: 'Blogs', count: 12 },
-    { title: 'Projects', count: 24 },
-    { title: 'Contacts', count: 7 },
-  ];
-  return (
-    <section id="admin" className="relative mx-auto max-w-7xl px-6 py-20">
-      <SectionHeader eyebrow="Admin" title="Dashboard Preview" />
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        {cards.map((c) => (
-          <GlassCard key={c.title} className="p-6">
-            <div className="text-zinc-400 text-sm">{c.title}</div>
-            <div className="mt-2 text-3xl text-zinc-100">{c.count}</div>
-            <div className="mt-3 h-2 w-full rounded-full bg-white/5">
-              <div className="h-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-400" style={{ width: Math.min(100, c.count * 4) + '%' }} />
-            </div>
-          </GlassCard>
-        ))}
-      </div>
-    </section>
   );
 }
 
@@ -268,7 +49,299 @@ export default function Sections() {
       <InteriorSection />
       <LoansSection />
       <ContactSection />
-      <AdminPreview />
+      <AdminSection />
     </>
+  );
+}
+
+function AboutSection() {
+  const [selected, setSelected] = useState(team[0]);
+  return (
+    <section id="about" className="relative py-24">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(59,130,246,0.08),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.06),transparent_30%)]" />
+      <div className="relative mx-auto w-[92%] max-w-7xl">
+        <SectionHeader icon={Users} title="About Obsidian Realty" subtitle="Cinematic Foundations" />
+        <p className="mt-3 max-w-3xl text-gray-400">
+          We create immersive spaces with a technology-first approach. Our team blends architecture, interior artistry, and finance expertise to deliver a seamless, premium home-buying experience.
+        </p>
+
+        {/* Zoom-in navigation style team grid */}
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 gap-4 lg:col-span-2">
+            {team.map((m) => (
+              <motion.button
+                key={m.id}
+                onClick={() => setSelected(m)}
+                whileHover={{ scale: 1.02 }}
+                className={`group relative overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur text-left ${selected.id === m.id ? 'outline outline-1 outline-blue-400/40' : ''}`}
+              >
+                <img src={m.img} alt={m.name} className="h-44 w-full object-cover object-center opacity-90 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f14] via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <div className="text-sm font-medium text-gray-100">{m.name}</div>
+                  <div className="text-xs text-gray-400">{m.role}</div>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+
+          <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 p-5 backdrop-blur">
+            <div className="flex items-center gap-3">
+              <img src={selected.img} alt={selected.name} className="h-14 w-14 rounded-xl object-cover" />
+              <div>
+                <div className="font-medium text-gray-100">{selected.name}</div>
+                <div className="text-xs text-gray-400">{selected.role}</div>
+              </div>
+            </div>
+            <p className="mt-4 text-sm text-gray-300">{selected.bio}</p>
+            <div className="mt-4 h-1.5 w-full rounded-full bg-white/10">
+              <div className="h-1.5 w-1/2 rounded-full bg-gradient-to-r from-blue-500 to-blue-300" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProjectsSection() {
+  const [filter, setFilter] = useState('All');
+  const cats = ['All', 'Apartments', 'Villas', 'Commercial'];
+  const filtered = useMemo(() => (filter === 'All' ? projects : projects.filter((p) => p.cat === filter)), [filter]);
+
+  return (
+    <section id="projects" className="relative py-24">
+      <div className="relative mx-auto w-[92%] max-w-7xl">
+        <SectionHeader icon={Building2} title="Projects" subtitle="Curated Portfolio" />
+        <div className="mt-6 flex items-center gap-2 flex-wrap">
+          {cats.map((c) => (
+            <button
+              key={c}
+              onClick={() => setFilter(c)}
+              className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm ring-1 ring-white/10 bg-white/5 hover:bg-white/10 ${filter === c ? 'text-white outline outline-1 outline-blue-400/40' : 'text-gray-300'}`}
+            >
+              <Filter size={14} /> {c}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((p) => (
+            <motion.div key={p.id} whileHover={{ y: -6 }} className="group overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur">
+              <div className="relative">
+                <img src={p.img} alt={p.title} className="h-56 w-full object-cover object-center transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <div className="text-gray-100 font-medium">{p.title}</div>
+                  <div className="text-xs text-gray-400">{p.cat}</div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function InteriorSection() {
+  return (
+    <section id="interior" className="relative py-24">
+      <div className="relative mx-auto w-[92%] max-w-7xl">
+        <SectionHeader icon={Ruler} title="Interior Designing" subtitle="Before / After" />
+        <p className="mt-3 max-w-3xl text-gray-400">
+          Minimalist typography, fine materials, layered lighting. Drag to reveal elegant makeovers.
+        </p>
+
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[1, 2].map((i) => (
+            <BeforeAfterCard key={i} before={`https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop`} after={`https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop`} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BeforeAfterCard({ before, after }) {
+  const [val, setVal] = useState(50);
+  return (
+    <div className="relative overflow-hidden rounded-2xl ring-1 ring-white/10 bg-white/5 backdrop-blur">
+      <div className="relative h-72">
+        <img src={after} alt="after" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0">
+          <div className="relative h-full w-full">
+            <img src={before} alt="before" style={{ width: `${val}%` }} className="absolute inset-0 h-full object-cover" />
+          </div>
+        </div>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={val}
+          onChange={(e) => setVal(parseInt(e.target.value))}
+          className="absolute inset-x-6 bottom-4 h-1 w-[calc(100%-48px)] cursor-ew-resize appearance-none rounded-full bg-white/20"
+        />
+      </div>
+      <div className="flex items-center justify-between p-4">
+        <div className="text-sm text-gray-300">Drag slider to compare</div>
+        <div className={`h-2 w-2 rounded-full bg-gradient-to-r ${accent} shadow-[0_0_20px_rgba(59,130,246,0.6)]`} />
+      </div>
+    </div>
+  );
+}
+
+function LoansSection() {
+  const [principal, setPrincipal] = useState(8000000);
+  const [rate, setRate] = useState(8.35);
+  const [years, setYears] = useState(20);
+
+  const monthly = useMemo(() => {
+    const r = rate / 12 / 100;
+    const n = years * 12;
+    if (r === 0) return principal / n;
+    return (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  }, [principal, rate, years]);
+
+  return (
+    <section id="loans" className="relative py-24">
+      <div className="relative mx-auto w-[92%] max-w-7xl">
+        <SectionHeader icon={Banknote} title="Home Loans" subtitle="Smart Financing" />
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 rounded-2xl bg-white/5 ring-1 ring-white/10 p-6 backdrop-blur">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="text-xs text-gray-400">Principal (₹)</label>
+                <input type="number" value={principal} onChange={(e) => setPrincipal(Number(e.target.value))} className="mt-1 w-full rounded-xl bg-black/30 px-3 py-2 text-gray-100 ring-1 ring-white/10 focus:ring-blue-500/50 outline-none" />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400">Interest Rate (%)</label>
+                <input type="number" step="0.05" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="mt-1 w-full rounded-xl bg-black/30 px-3 py-2 text-gray-100 ring-1 ring-white/10 focus:ring-blue-500/50 outline-none" />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400">Tenure (years)</label>
+                <input type="number" value={years} onChange={(e) => setYears(Number(e.target.value))} className="mt-1 w-full rounded-xl bg-black/30 px-3 py-2 text-gray-100 ring-1 ring-white/10 focus:ring-blue-500/50 outline-none" />
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+              <InfoTile label="Monthly EMI" value={`₹ ${Math.round(monthly).toLocaleString('en-IN')}`} />
+              <InfoTile label="Total Interest" value={`₹ ${(Math.round(monthly) * years * 12 - principal).toLocaleString('en-IN')}`} />
+              <InfoTile label="Total Payable" value={`₹ ${(Math.round(monthly) * years * 12).toLocaleString('en-IN')}`} />
+              <InfoTile label="Rate" value={`${rate}%`} />
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 p-6 backdrop-blur">
+            <div className="text-sm font-medium text-gray-200 mb-3">Partner Banks</div>
+            <div className="space-y-3">
+              {banks.map((b) => (
+                <div key={b.id} className="flex items-center justify-between rounded-xl bg-black/30 ring-1 ring-white/10 px-3 py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-300" />
+                    <div>
+                      <div className="text-gray-100 text-sm">{b.name}</div>
+                      <div className="text-xs text-gray-400">Starting {b.rate}%</div>
+                    </div>
+                  </div>
+                  <button onClick={() => setRate(b.rate)} className="text-xs rounded-lg px-3 py-2 bg-white/10 hover:bg-white/15">
+                    Select
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function InfoTile({ label, value }) {
+  return (
+    <div className="rounded-xl bg-black/30 ring-1 ring-white/10 p-4">
+      <div className="text-xs text-gray-400">{label}</div>
+      <div className="mt-1 text-gray-100">{value}</div>
+    </div>
+  );
+}
+
+function ContactSection() {
+  return (
+    <section id="contact" className="relative py-24">
+      <div className="relative mx-auto w-[92%] max-w-7xl">
+        <SectionHeader icon={Send} title="Contact" subtitle="Let’s Collaborate" />
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 rounded-2xl bg-white/5 ring-1 ring-white/10 p-6 backdrop-blur">
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs text-gray-400">Name</label>
+                <input type="text" className="mt-1 w-full rounded-xl bg-black/30 px-3 py-2 text-gray-100 ring-1 ring-white/10 focus:ring-blue-500/50 outline-none" placeholder="Your name" />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400">Email</label>
+                <input type="email" className="mt-1 w-full rounded-xl bg-black/30 px-3 py-2 text-gray-100 ring-1 ring-white/10 focus:ring-blue-500/50 outline-none" placeholder="you@example.com" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="text-xs text-gray-400">Message</label>
+                <textarea rows={5} className="mt-1 w-full rounded-xl bg-black/30 px-3 py-2 text-gray-100 ring-1 ring-white/10 focus:ring-blue-500/50 outline-none" placeholder="Tell us about your project" />
+              </div>
+              <div className="md:col-span-2 flex items-center justify-between">
+                <div className="text-xs text-gray-400">We respond within 24 hours.</div>
+                <button className="rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-3 text-sm font-medium text-white shadow-[0_10px_30px_rgba(59,130,246,0.40)] hover:shadow-[0_12px_40px_rgba(59,130,246,0.55)]">
+                  Send Message
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 p-6 backdrop-blur">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-300" />
+              <div>
+                <div className="text-gray-100">Head Office</div>
+                <div className="text-xs text-gray-400">Obsidian Tower, Downtown</div>
+              </div>
+            </div>
+            <div className="mt-4 text-sm text-gray-300">contact@obsidianrealty.com</div>
+            <div className="text-sm text-gray-300">+91 98765 43210</div>
+            <div className="mt-4 h-40 rounded-xl bg-[url('https://images.unsplash.com/photo-1491557345352-5929e343eb89?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center ring-1 ring-white/10" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AdminSection() {
+  const tabs = [
+    { id: 'blogs', label: 'Blogs', icon: FileText },
+    { id: 'projects', label: 'Projects', icon: ImageIcon },
+    { id: 'contacts', label: 'Contacts', icon: Send },
+  ];
+  const [active, setActive] = useState('projects');
+
+  return (
+    <section id="admin" className="relative py-24">
+      <div className="relative mx-auto w-[92%] max-w-7xl">
+        <SectionHeader icon={FileText} title="Admin" subtitle="Preview Only" />
+        <div className="mt-6 rounded-2xl bg-white/5 ring-1 ring-white/10 p-4 backdrop-blur">
+          <div className="flex items-center gap-2">
+            {tabs.map((t) => (
+              <button key={t.id} onClick={() => setActive(t.id)} className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm ring-1 ring-white/10 ${active === t.id ? 'bg-white/15 text-white' : 'bg-white/5 text-gray-300 hover:bg-white/10'}`}>
+                <t.icon size={14} /> {t.label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="rounded-xl bg-black/30 ring-1 ring-white/10 p-4">
+                <div className="text-sm font-medium text-gray-100">{active} card {i}</div>
+                <div className="mt-1 text-xs text-gray-400">Minimal admin preview</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

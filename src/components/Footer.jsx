@@ -1,18 +1,13 @@
-import React from 'react';
-
 export default function Footer() {
   return (
-    <footer className="relative mt-20 border-t border-white/10 bg-black/20">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-zinc-400 text-sm">© {new Date().getFullYear()} Obsidian Realty. All rights reserved.</div>
-          <div className="flex items-center gap-4 text-sm text-zinc-400">
-            <a href="#home" className="hover:text-zinc-200">Home</a>
-            <a href="#projects" className="hover:text-zinc-200">Projects</a>
-            <a href="#contact" className="hover:text-zinc-200">Contact</a>
-          </div>
+    <footer className="relative border-t border-white/10">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(59,130,246,0.15),transparent_50%)]" />
+      <div className="relative mx-auto w-[92%] max-w-7xl py-10 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-300" />
+          <div className="text-gray-200 font-medium">Obsidian Realty</div>
         </div>
+        <div className="text-xs text-gray-400">© {new Date().getFullYear()} Obsidian Realty. All rights reserved.</div>
       </div>
     </footer>
   );
